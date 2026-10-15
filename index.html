@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ИИ-Генератор Карточек</title>
-    <!-- Подключаем скрипт Telegram для мобильных приложений -->
     <script src="https://telegram.org"></script>
     <style>
         body {
@@ -79,9 +78,8 @@
     </div>
 
     <script>
-        // Инициализируем мобильное окно Telegram
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Раскрываем приложение на весь экран телефона
+        if (tg) tg.expand();
 
         async function generateImage() {
             const prompt = document.getElementById('promptInput').value;
@@ -96,14 +94,12 @@
             loader.style.display = 'block';
             img.style.display = 'none';
             
-            // Добавляем теги для идеального коммерческого качества
             const fullPrompt = prompt + ", commercial product photography, studio lighting, high resolution, marketplace style";
             const encodedPrompt = encodeURIComponent(fullPrompt);
             
-            // Запрос идет напрямую с телефона пользователя на открытое зеркало ИИ
-            const imageUrl = `https://ru.net{encodedPrompt}?width=768&height=768&nologo=true&private=true`;
+            // ИСПРАВЛЕНО: Оригинальный стабильный сервер ИИ
+            const imageUrl = `https://pollinations.ai{encodedPrompt}?width=768&height=768&nologo=true&private=true`;
             
-            // Загружаем картинку в элемент img
             img.src = imageUrl;
             
             img.onload = function() {
@@ -119,3 +115,4 @@
     </script>
 </body>
 </html>
+
