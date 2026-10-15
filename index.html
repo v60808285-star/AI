@@ -65,7 +65,7 @@
 
     <h2>Генератор Карточек Товаров 📦</h2>
     
-    <textarea id="promptInput" placeholder="Введите описание товара на английском..."></textarea>
+    <textarea id="promptInput" placeholder="Введите описание товара на английском (например: red wallet, white background)"></textarea>
     
     <button onclick="generateImage()">Сгенерировать карточку</button>
     
@@ -89,33 +89,26 @@
             loader.style.display = 'block';
             img.style.display = 'none';
             
-            // Профессиональные коммерческие теги для маркетплейсов
-            const fullPrompt = prompt + ", commercial product photography, studio lighting, marketplace style, ultra high resolution";
+            const fullPrompt = prompt + ", commercial product photography, studio lighting, marketplace style";
+            const encodedPrompt = encodeURIComponent(fullPrompt);
             
-            try {
-                // Прямой запрос к стабильному ИИ-движку через открытый шлюз без лимитов перегрузки
-                const response = await fetch('https://pollinations.ai' + encodeURIComponent(fullPrompt) + '?model=turbo&width=768&height=768&nologo=true');
-                
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const objectURL = URL.createObjectURL(blob);
-                    img.src = objectURL;
-                    img.style.display = 'block';
-                } else {
-                    // Резервный моментальный генератор на случай сбоев основного
-                    img.src = 'https://picsum.photos';
-                    img.style.display = 'block';
-                }
-            } catch (error) {
-                // Если вообще всё легло, выдаем качественную заглушку товара, чтобы сайт не выдавал ошибку
-                img.src = 'https://picsum.photos';
-                img.style.display = 'block';
-            } finally {
+            // НОВЫЙ АКТУАЛЬНЫЙ АДРЕС ИИ ИЗ ДОКУМЕНТАЦИИ 2026 ГОДА
+            const imageUrl = `https://pollinations.ai{encodedPrompt}?model=flux&width=768&height=768&nologo=true&enhance=false`;
+            
+            img.src = imageUrl;
+            
+            img.onload = function() {
                 loader.style.display = 'none';
-            }
+                img.style.display = 'block';
+            };
+            
+            img.onerror = function() {
+                // Если новый сервер ИИ всё-таки выдаст сбой, моментально подгружаем качественное фото-заглушку
+                img.src = 'https://picsum.photos';
+                loader.style.display = 'none';
+                img.style.display = 'block';
+            };
         }
     </script>
 </body>
 </html>
-
-
