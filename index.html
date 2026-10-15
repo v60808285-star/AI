@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИИ-Генератор Карточек</title>
+    <!-- Подключаем скрипт Telegram для мобильных приложений -->
+    <script src="https://telegram.org"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #182533;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h2 { margin-bottom: 20px; font-size: 20px; text-align: center; }
+        textarea {
+            width: 100%;
+            height: 80px;
+            background-color: #243141;
+            border: 1px solid #3b4e66;
+            border-radius: 10px;
+            color: white;
+            padding: 12px;
+            font-size: 15px;
+            box-sizing: border-box;
+            resize: none;
+            margin-bottom: 15px;
+        }
+        button {
+            width: 100%;
+            background-color: #2ea6ff;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:active { background-color: #1a8cd8; }
+        .image-container {
+            width: 100%;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 12px;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .loader {
+            display: none;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #8aa1b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Генератор Карточек Товаров 📦</h2>
+    
+    <textarea id="promptInput" placeholder="Введите описание товара на английском (например: red leather wallet, white background)"></textarea>
+    
+    <button onclick="generateImage()">Сгенерировать карточку</button>
+    
+    <div class="loader" id="loader">ИИ создает изображение, подождите... ⏳</div>
+    
+    <div class="image-container">
+        <img id="resultImage" alt="Готовая карточка товара">
+    </div>
+
+    <script>
+        // Инициализируем мобильное окно Telegram
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Раскрываем приложение на весь экран телефона
+
+        async function generateImage() {
+            const prompt = document.getElementById('promptInput').value;
+            const loader = document.getElementById('loader');
+            const img = document.getElementById('resultImage');
+            
+            if (!prompt) {
+                alert('Пожалуйста, введите описание товара!');
+                return;
+            }
+            
+            loader.style.display = 'block';
+            img.style.display = 'none';
+            
+            // Добавляем теги для идеального коммерческого качества
+            const fullPrompt = prompt + ", commercial product photography, studio lighting, high resolution, marketplace style";
+            const encodedPrompt = encodeURIComponent(fullPrompt);
+            
+            // Запрос идет напрямую с телефона пользователя на открытое зеркало ИИ
+            const imageUrl = `https://ru.net{encodedPrompt}?width=768&height=768&nologo=true&private=true`;
+            
+            // Загружаем картинку в элемент img
+            img.src = imageUrl;
+            
+            img.onload = function() {
+                loader.style.display = 'none';
+                img.style.display = 'block';
+            };
+            
+            img.onerror = function() {
+                loader.style.display = 'none';
+                alert('Сервер ИИ перегружен. Пожалуйста, попробуйте еще раз.');
+            };
+        }
+    </script>
+</body>
+</html>
